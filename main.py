@@ -7,8 +7,8 @@ st.set_page_config(page_title="eSports Analyse Tool", layout="wide")
 seite = st.sidebar.radio("Seite wählen", ["📥 Match-Erfassung", "📊 Auswertung"])
 
 maps = ["Bank", "Border", "Chalet", "Clubhouse", "Consulate", "Kafe", "Nighthaven", "Lair", "Skyscraper"]
-attack_ops = ["no","no","Ace", "Amaru", "Ash", "Blackbeard", "Blitz", "Buck", "Capitao", "Dokkaebi", "Finka", "Flores", "Glaze", "Gridlock", "Hibana", "Iana", "IQ", "Jackal", "Kali", "Lion", "Maverick", "Montagne", "Nokk", "Nomad", "Osa", "Sens", "Sledge", "Thatcher", "Thermite", "Twitch", "Ying", "Zero", "Zofia", "Grim", "Brave", "Fuze", "Ram", "Demos", "Rauora"]
-defense_ops = ["no","no","Alibi", "Aruni", "Azami", "Bandit", "Castle", "Caveira", "Clash", "Doc", "Echo", "Ela", "Frost", "Goyo", "Jäger", "Kaid", "Kapkan", "Lesion", "Melusi", "Mira", "Mozzie", "Mute", "Orxy", "Pulse", "Rook", "Smoke", "Tachanka", "Thorne", "Thunderbird", "Valkyrie", "Vigil", "Wamai", "Warden", "solis", "Maestro", "Fenrir", "Tubarao", "Skopos"]
+attack_ops = ["no","noban","Ace", "Amaru", "Ash", "Blackbeard", "Blitz", "Buck", "Capitao", "Dokkaebi", "Finka", "Flores", "Glaze", "Gridlock", "Hibana", "Iana", "IQ", "Jackal", "Kali", "Lion", "Maverick", "Montagne", "Nokk", "Nomad", "Osa", "Sens", "Sledge", "Thatcher", "Thermite", "Twitch", "Ying", "Zero", "Zofia", "Grim", "Brave", "Fuze", "Ram", "Demos", "Rauora"]
+defense_ops = ["no","noban","Alibi", "Aruni", "Azami", "Bandit", "Castle", "Caveira", "Clash", "Doc", "Echo", "Ela", "Frost", "Goyo", "Jäger", "Kaid", "Kapkan", "Lesion", "Melusi", "Mira", "Mozzie", "Mute", "Orxy", "Pulse", "Rook", "Smoke", "Tachanka", "Thorne", "Thunderbird", "Valkyrie", "Vigil", "Wamai", "Warden", "solis", "Maestro", "Fenrir", "Tubarao", "Skopos"]
 
 if seite == "📥 Match-Erfassung":
     st.title("📥 Match-Erfassung")
