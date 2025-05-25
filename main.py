@@ -4,6 +4,7 @@ import streamlit as st
 import pandas as pd
 import os
 from datetime import datetime
+import ast
 
 st.set_page_config(page_title="eSports Analyse Tool", layout="wide")
 
@@ -26,12 +27,9 @@ if seite == "📥 Match-Erfassung":
     team1 = st.text_input("Team 1")
     team2 = st.text_input("Team 2")
     match_format = st.selectbox("Match Format", ["Bo1", "Bo3", "Bo5"])
-    input_mode = st.radio("Daten eingeben über", ["Manuell", "Matchlink einfügen"])
-    faceit_link = ""
 
-    if input_mode == "Matchlink einfügen":
-        faceit_link = st.text_input("Matchlink (Faceit/Desbl)")
-        st.warning("Automatisches Parsen wird bald unterstützt – bitte derzeit noch manuell eintragen.")
+    # Matchlink optional
+    faceit_link = st.text_input("Matchlink (optional)")
 
     # --- Map-Bans & Picks ---
     st.subheader("🗺️ Map-Bans & Picks")
@@ -47,8 +45,9 @@ if seite == "📥 Match-Erfassung":
         pick_team = st.selectbox("Wer pickt die Map?", [team1, team2])
         picked_map = st.selectbox("Welche Map wird gespielt?", maps)
         ban_pick_data.append((pick_team, "Pick", picked_map))
-        atk_start = st.selectbox("Start als Attacker", [team1, team2])
-        def_start = st.selectbox("Start als Defender", [team1, team2])
+        # Startseiten optional
+        atk_start = st.selectbox("Start als Attacker (optional)", ["", team1, team2])
+        def_start = st.selectbox("Start als Defender (optional)", ["", team1, team2])
     elif match_format == "Bo3":
         for i in range(4):
             who = st.selectbox(f"Ban {i+1} von", [team1, team2], key=f"bo3banwho{i}")
@@ -118,10 +117,30 @@ elif seite == "📊 Auswertung":
     st.title("📊 Match-Auswertung")
     if os.path.exists(data_path):
         df = pd.read_csv(data_path)
-        team_filter = st.selectbox("Team auswählen (optional)", ["Alle Teams"] + sorted(df["Team1"].unique().tolist() + df["Team2"].unique().tolist()))
-        st.markdown("### Analyse")
+        df["BanPick"] = df["BanPick"].apply(lambda x: ast.literal_eval(x) if pd.notna(x) else [])
+        df["OperatorBans"] = df["OperatorBans"].apply(lambda x: ast.literal_eval(x) if pd.notna(x) else [])
+
+        team_filter = st.selectbox("Team auswählen (optional)", ["Alle Teams"] + sorted(set(df["Team1"]).union(set(df["Team2"]))))
+
         if team_filter != "Alle Teams":
             df = df[(df["Team1"] == team_filter) | (df["Team2"] == team_filter)]
+
+        # Operatorban-Analyse
+        st.subheader("🔍 Operator-Ban Analyse")
+        ban_counts = {}
+        for row in df["OperatorBans"]:
+            for m, team, atk, dfn in row:
+                for op in atk.split(","):
+                    if op:
+                        ban_counts[op] = ban_counts.get(op, 0) + 1
+                for op in dfn.split(","):
+                    if op:
+                        ban_counts[op] = ban_counts.get(op, 0) + 1
+        if ban_counts:
+            sorted_bans = sorted(ban_counts.items(), key=lambda x: x[1], reverse=True)
+            st.write(pd.DataFrame(sorted_bans, columns=["Operator", "Bans"]))
+
+        st.subheader("📄 Gesamtdaten")
         st.dataframe(df)
     else:
         st.warning("Noch keine Matchdaten vorhanden.")
